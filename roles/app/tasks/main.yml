@@ -1,0 +1,38 @@
+---
+- debug:
+    var: user
+- debug:
+    var: app
+- debug:
+    var: app_ssh_dir
+
+- name: group
+  group:
+    name: "{{ user }}"
+    state: present
+
+- name: user
+  user:
+    name: "{{ user }}"
+    group: "{{ user }}"
+    shell: /bin/bash
+    state: present
+
+# .ssh
+# authorized_keys - incoming capistrano commands
+# id_rsa, config - outgoing capistrano repo access
+- name: user/.ssh
+  copy:
+    src: "{{ app_ssh_dir }}"
+    dest: "/home/{{ user }}/"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: ugo-rwx,u+rwX
+
+- name: "/opt/{{ app }}"
+  file:
+    path: "/opt/{{ app }}"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    state: directory
+    mode: 0755

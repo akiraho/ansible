@@ -1,0 +1,45 @@
+---
+- debug:
+    var: instance_names
+- debug:
+    var: zone
+- debug:
+    var: machine_type
+- debug:
+    var: image
+- debug:
+    var: service_account_email
+- debug:
+    var: credentials_file
+- debug:
+    var: project_id
+- debug:
+    var: tags
+
+- name: create instances
+  gce:
+    instance_names: "{{ instance_names }}"
+    zone: "{{ zone }}"
+    machine_type: "{{ machine_type }}"
+    image: "{{ image }}"
+    state: present
+    service_account_email: "{{ service_account_email }}"
+    credentials_file: "{{ credentials_file }}"
+    project_id: "{{ project_id }}"
+    tags: "{{ tags }}"
+  register: gce
+
+- name: save host data
+  add_host:
+    hostname: "{{ item.public_ip }}"
+    groupname: new_instances
+  with_items: "{{ gce.instance_data }}"
+
+- name: wait for ssh for instances
+  wait_for:
+    delay: 1
+    host: "{{ item.public_ip }}"
+    port: 22
+    state: started
+    timeout: 60
+  with_items: "{{ gce.instance_data }}"
