@@ -23,11 +23,15 @@
 # id_rsa, config - outgoing capistrano repo access
 - name: user/.ssh
   copy:
-    src: "{{ app_ssh_dir }}"
-    dest: "/home/{{ user }}/"
+    src: "{{ app_ssh_dir }}/"
+    dest: "/home/{{ user }}/.ssh/"
     owner: "{{ user }}"
     group: "{{ user }}"
-    mode: ugo-rwx,u+rwX
+    mode: 0600
+- name: user/.ssh chmod
+  file:
+    path: "/home/{{ user }}/.ssh/"
+    mode: 0700
 
 - name: "/opt/{{ app }}"
   file:
