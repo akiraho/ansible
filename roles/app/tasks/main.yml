@@ -39,4 +39,4 @@
     owner: "{{ user }}"
     group: "{{ user }}"
     state: directory
-    mode: 0755
+    mode: 0700

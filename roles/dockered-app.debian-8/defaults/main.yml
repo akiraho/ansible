@@ -1,2 +1,3 @@
 ---
 docker_network: net01
+docker_env_dir: .private/docker_env_dir

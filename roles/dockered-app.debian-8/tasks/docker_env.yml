@@ -1,0 +1,20 @@
+---
+- debug:
+    var: app
+- debug:
+    var: user
+- debug:
+    var: docker_env_dir
+
+- name: docker env
+  copy:
+    src: "{{ docker_env_dir }}/"
+    dest: "/opt/{{ app }}/.private/docker_env_dir"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: 0600
+
+- name: docker_env_dir chmod
+  file:
+    path: "/opt/{{ app }}/.private/docker_env_dir"
+    mode: 0700

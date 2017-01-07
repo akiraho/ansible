@@ -11,3 +11,7 @@
 - include: docker_network.yml
   become: true
   become_user: "{{ user }}"
+
+- include: docker_env.yml
+  become: true
+  become_user: "{{ user }}"
