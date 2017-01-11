@@ -1,0 +1,3 @@
+---
+- include: dump_to_local.yml
+- include: restore_to_remote.yml

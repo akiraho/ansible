@@ -1,0 +1,35 @@
+---
+# params:
+# local_dump_file
+# source_ssh_host
+# source_ssh_user
+# source_db_user
+# source_db_password
+# source_db_name
+
+- name: remote host / dump mysql database
+  hosts: "{{ source_ssh_host }}"
+  remote_user: "{{ source_ssh_user }}"
+  tasks:
+    - shell: echo `mktemp -d`/file
+      register: source_dump_file
+    - include: mysql_dump_host.yml db_user={{ source_db_user }} db_password={{ source_db_password }} db_name={{ source_db_name }} filename={{ source_dump_file.stdout }}
+
+- name: remote host / fetch dump file
+  hosts: "{{ source_ssh_host }}"
+  remote_user: "{{ source_ssh_user }}"
+  tasks:
+
+    - name: fetch dump file
+      fetch:
+        src: "{{ source_dump_file.stdout }}"
+        dest: "{{ local_dump_file }}"
+        flat: true
+
+    - shell: dirname {{ source_dump_file.stdout }}
+      register: source_dump_dir
+
+    - name: cleanup source dump file
+      file:
+        path: "{{ source_dump_dir.stdout }}"
+        state: absent

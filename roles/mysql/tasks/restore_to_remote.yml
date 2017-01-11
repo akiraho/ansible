@@ -1,0 +1,67 @@
+---
+# params:
+# local_dump_file
+# target_db_docker_container
+# target_db_docker_image
+# target_ssh_host
+# target_ssh_user
+# target_mysql_root_password
+# target_db_user
+# target_db_password
+# target_db_name
+
+- name: prepare for remote tmp dir
+  hosts: "{{ target_ssh_host }}"
+  remote_user: "{{ target_ssh_user }}"
+  tasks:
+
+    - name: docker db should be running
+      shell: docker ps --format {{'{{.Names}}'}} |
+             grep {{ target_db_docker_container }}
+      register: container_exists
+      failed_when: container_exists.rc != 0
+
+    - name: db user should not exist
+      shell: docker exec -t {{ target_db_docker_container }} bash -lc "
+             mysql -p{{ target_mysql_root_password }} -e \"
+             SELECT user FROM mysql.user
+             \"" | grep {{ target_db_user }}
+      register: user_exists
+      failed_when: user_exists.rc == 0
+
+    - name: db should not exist
+      shell: docker exec -t {{ target_db_docker_container }} bash -lc "
+             mysql -p{{ target_mysql_root_password }} -e \"
+             SHOW DATABASES
+             \"" | grep {{ target_db_name }}
+      register: db_exists
+      failed_when: db_exists.rc == 0
+
+    - name: create tmp dir for db dump
+      shell: echo `mktemp -d`/file
+      register: target_dump_file
+
+    - name: copy dump file to target
+      copy:
+        src: "{{ local_dump_file }}"
+        dest: "{{ target_dump_file.stdout }}"
+        mode: 0600
+
+    - name: docker db / create user & database
+      shell: docker exec -t {{ target_db_docker_container }} bash -lc "
+             mysql -p{{ target_mysql_root_password }} -e \"
+             CREATE USER '{{ target_db_user }}'@'%' IDENTIFIED BY '{{ target_db_password }}';
+             GRANT USAGE ON *.* TO '{{ target_db_user }}'@'%';
+             CREATE DATABASE IF NOT EXISTS {{ target_db_name }};
+             GRANT ALL PRIVILEGES ON {{ target_db_name }}.* TO '{{ target_db_user }}'@'%';
+             \""
+
+    - include: mysql_restore_docker.yml dump_file={{ target_dump_file.stdout }} docker_container={{ target_db_docker_container }} db_user={{ target_db_user }} db_password={{ target_db_password }} db_name={{ target_db_name }}
+
+    - shell: dirname {{ target_dump_file.stdout }}
+      register: target_dump_dir
+
+    - name: cleanup target dump file
+      file:
+        path: "{{ target_dump_dir.stdout }}"
+        state: absent

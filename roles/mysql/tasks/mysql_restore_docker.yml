@@ -1,0 +1,28 @@
+---
+# params:
+# dump_file
+# docker_container
+# db_user
+# db_password
+# db_name
+
+- name: docker / create tmp dir
+  shell: docker exec -t {{ docker_container }} bash -lc 'echo `mktemp -d`/file'
+  register: docker_dump_file
+
+- name: docker / db restore
+  shell: docker cp {{ dump_file }} {{ docker_container }}:{{ docker_dump_file.stdout }} &&
+         docker exec -t {{ docker_container }} bash -lc "
+         gunzip --stdout {{ docker_dump_file.stdout }} |
+         mysql -u {{ db_user }} -p{{ db_password }} {{ db_name }}
+         "
+
+- shell: docker exec {{ docker_container }} bash -lc "
+         dirname {{ docker_dump_file.stdout }}
+         "
+  register: docker_dump_dir
+
+- name: docker / cleanup
+  shell: docker exec {{ docker_container }} bash -lc "
+         rm -rf {{ docker_dump_dir.stdout }}
+         "
