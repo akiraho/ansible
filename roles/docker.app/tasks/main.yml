@@ -1,0 +1,8 @@
+---
+- debug: var=user
+
+- name: docker / user
+  user:
+    name: "{{ user }}"
+    groups: docker
+    state: present

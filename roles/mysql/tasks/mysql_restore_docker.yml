@@ -1,10 +1,9 @@
 ---
-# params:
-# dump_file
-# docker_container
-# db_user
-# db_password
-# db_name
+- debug: var=dump_file
+- debug: var=docker_container
+- debug: var=db_user
+- debug: var=db_password
+- debug: var=db_name
 
 - name: docker / create tmp dir
   shell: docker exec -t {{ docker_container }} bash -lc 'echo `mktemp -d`/file'

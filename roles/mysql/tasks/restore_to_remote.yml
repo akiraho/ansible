@@ -1,14 +1,13 @@
 ---
-# params:
-# local_dump_file
-# target_db_docker_container
-# target_db_docker_image
-# target_ssh_host
-# target_ssh_user
-# target_mysql_root_password
-# target_db_user
-# target_db_password
-# target_db_name
+- debug: var=local_dump_file
+- debug: var=target_db_docker_container
+- debug: var=target_db_docker_image
+- debug: var=target_ssh_host
+- debug: var=target_ssh_user
+- debug: var=target_mysql_root_password
+- debug: var=target_db_user
+- debug: var=target_db_password
+- debug: var=target_db_name
 
 - name: prepare for remote tmp dir
   hosts: "{{ target_ssh_host }}"

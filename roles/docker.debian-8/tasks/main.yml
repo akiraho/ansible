@@ -1,8 +1,6 @@
 ---
-- debug:
-    var: docker_version
-- debug:
-    var: docker_compose_version
+- debug: var=docker_version
+- debug: var=docker_compose_version
 
 - name: install docker
   shell: apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D &&

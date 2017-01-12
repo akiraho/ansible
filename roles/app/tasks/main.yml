@@ -1,10 +1,15 @@
 ---
-- debug:
-    var: user
-- debug:
-    var: app
-- debug:
-    var: app_ssh_dir
+- debug: var=app
+- debug: var=user
+- debug: var=etc
+
+- name: dir_app
+  command: "echo /opt/{{ app }}"
+  register: dir_app
+
+- name: dir_app_etc
+  command: "echo {{ dir_app.stdout }}/etc"
+  register: dir_app_etc
 
 - name: group
   group:
@@ -18,25 +23,35 @@
     shell: /bin/bash
     state: present
 
-# .ssh
-# authorized_keys - incoming capistrano commands
-# id_rsa, config - outgoing capistrano repo access
-- name: user/.ssh
-  copy:
-    src: "{{ app_ssh_dir }}/"
-    dest: "/home/{{ user }}/.ssh/"
-    owner: "{{ user }}"
-    group: "{{ user }}"
-    mode: 0600
-- name: user/.ssh chmod
+- name: app directory
   file:
-    path: "/home/{{ user }}/.ssh/"
-    mode: 0700
-
-- name: "/opt/{{ app }}"
-  file:
-    path: "/opt/{{ app }}"
+    path: "{{ dir_app.stdout }}"
     owner: "{{ user }}"
     group: "{{ user }}"
     state: directory
     mode: 0700
+
+# etc/user_ssh - linked from ~user/.ssh for capistrano
+# etc/[others] - capistrano-stage-specific configs
+- name: app etc
+  copy:
+    src: "{{ etc }}"
+    dest: "{{ dir_app.stdout }}/"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: 0600
+
+- name: app directory / chmod
+  file:
+    path: "{{ dir_app.stdout }}"
+    state: directory
+    mode: u+rwX,go-rwx
+    recurse: true
+
+- name: link ~user/.ssh to /opt/app/etc/user_ssh
+  file:
+    src: "{{ dir_app_etc.stdout }}/user_ssh"
+    dest: "~{{ user }}/.ssh"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    state: link

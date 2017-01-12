@@ -1,6 +1,0 @@
----
-- debug:
-    var: docker_network
-
-- name: docker / network
-  shell: docker network create "{{ docker_network }}" || true

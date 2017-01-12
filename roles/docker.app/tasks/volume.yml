@@ -1,0 +1,11 @@
+---
+- debug: var=volume
+
+- name: check if volume exists
+  command: "docker volume inspect {{ volume }}"
+  register: is_volume_exists
+  ignore_errors: true
+
+- name: create if needed
+  command: "docker volume create --name={{ volume }}"
+  when: is_volume_exists.rc != 0

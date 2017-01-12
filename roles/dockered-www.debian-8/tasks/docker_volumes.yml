@@ -1,7 +1,0 @@
----
-- name: docker / volumes
-  shell: docker volume create --name={{ item }}
-  with_items:
-    - mariadb
-    - nginx
-    - phpmyadmin

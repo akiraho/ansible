@@ -1,20 +1,12 @@
 ---
-- debug:
-    var: instance_names
-- debug:
-    var: zone
-- debug:
-    var: machine_type
-- debug:
-    var: image
-- debug:
-    var: service_account_email
-- debug:
-    var: credentials_file
-- debug:
-    var: project_id
-- debug:
-    var: tags
+- debug: var=instance_names
+- debug: var=zone
+- debug: var=machine_type
+- debug: var=image
+- debug: var=service_account_email
+- debug: var=credentials_file
+- debug: var=project_id
+- debug: var=tags
 
 - name: create instances
   gce:

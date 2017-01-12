@@ -1,0 +1,11 @@
+---
+- debug: var=network
+
+- name: check if network exists
+  command: "docker network inspect {{ network }}"
+  register: is_network_exists
+  ignore_errors: true
+
+- name: create if needed
+  command: "docker network create {{ network }}"
+  when: is_network_exists.rc != 0

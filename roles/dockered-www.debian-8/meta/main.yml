@@ -1,3 +1,0 @@
----
-dependencies:
-- { role: dockered-app.debian-8 }

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ansible-playbook -v \
-  $1 $2 $3 \
+  $@ \
   --inventory=inventory \
   --extra-vars " \
   local_dump_file=/tmp/a \
