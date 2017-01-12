@@ -1,10 +1,11 @@
 ---
-- debug: var=local_dump_file
-- debug: var=source_ssh_host
-- debug: var=source_ssh_user
-- debug: var=source_db_user
-- debug: var=source_db_password
-- debug: var=source_db_name
+# params:
+# - local_dump_file
+# - source_ssh_host
+# - source_ssh_user
+# - source_db_user
+# - source_db_password
+# - source_db_name
 
 - name: remote host / dump mysql database
   hosts: "{{ source_ssh_host }}"
