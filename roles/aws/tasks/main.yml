@@ -1,0 +1,60 @@
+---
+- debug: var=aws_group
+- debug: var=aws_instance_type
+- debug: var=aws_image
+- debug: var=aws_region
+- debug: var=aws_key_name
+- debug: var=aws_key_file
+- debug: var=aws_instance_tags_name
+
+- name: security group
+  ec2_group:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    name: "{{ aws_group }}"
+    region: "{{ aws_region }}"
+    description: group / webservers
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+
+- name: key
+  ec2_key:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    name: "{{ aws_key_name }}"
+    region: "{{ aws_region }}"
+    key_material: "{{ item }}"
+  with_file: "{{ aws_key_file }}"
+
+- name: server
+  ec2:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    key_name: "{{ aws_key_name }}"
+    instance_type: "{{ aws_instance_type }}"
+    group: "{{ aws_group }}"
+    image: "{{ aws_image }}"
+    region: "{{ aws_region }}"
+    instance_tags:
+      name: "{{ aws_instance_tags_name }}"
+    count: 1
+    wait: true
+  register: ec2
+
+- name: host group
+  add_host:
+    hostname: "{{ item.public_ip }}"
+    groupname: new_instances
+  with_items: "{{ ec2.instances }}"
+
+- name: wait for ssh for instances
+  wait_for:
+    delay: 1
+    host: "{{ item.public_ip }}"
+    port: 22
+    state: started
+    timeout: 120
+  with_items: "{{ ec2.instances }}"
