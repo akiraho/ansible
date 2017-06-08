@@ -1,19 +1,19 @@
 ---
 - debug: var=app
 - debug: var=user
-- debug: var=etc
+- debug: var=opt
 
 - name: dir_app
   command: "echo /opt/{{ app }}"
   register: dir_app
 
-- name: dir_app_etc
-  command: "echo {{ dir_app.stdout }}/etc"
-  register: dir_app_etc
+#- name: dir_app_etc
+#  command: "echo {{ dir_app.stdout }}/etc"
+#  register: dir_app_etc
 
-- name: dir_app_log
-  command: "echo {{ dir_app.stdout }}/log"
-  register: dir_app_log
+#- name: dir_app_log
+#  command: "echo {{ dir_app.stdout }}/log"
+#  register: dir_app_log
 
 - name: group
   group:
@@ -35,11 +35,10 @@
     group: "{{ user }}"
     mode: 0700
 
-# etc/user_ssh - linked from ~user/.ssh for capistrano
-# etc/[others] - capistrano-stage-specific configs
-- name: app etc
+# app/bin|etc|user_ssh|log
+- name: app opt
   copy:
-    src: "{{ etc }}"
+    src: "{{ opt }}/"
     dest: "{{ dir_app.stdout }}/"
     owner: "{{ user }}"
     group: "{{ user }}"
@@ -47,22 +46,29 @@
 
 - name: app log
   file:
-    path: "{{ dir_app_log.stdout }}"
+    path: "{{ dir_app.stdout }}/log"
     state: directory
     owner: "{{ user }}"
     group: "{{ user }}"
     mode: 0700
 
-- name: app directory / chmod
+- name: chmod app
   file:
     path: "{{ dir_app.stdout }}"
     state: directory
     mode: u+rwX,go-rwx
     recurse: true
 
-- name: link ~user/.ssh to /opt/app/etc/user_ssh
+- name: chmod app/bin
   file:
-    src: "{{ dir_app_etc.stdout }}/user_ssh"
+    path: "{{ dir_app.stdout }}/bin"
+    state: directory
+    mode: u+rwx,go-rwx
+    recurse: true
+
+- name: link ~user/.ssh to /opt/app/user_ssh
+  file:
+    src: "{{ dir_app.stdout }}/user_ssh"
     dest: "~{{ user }}/.ssh"
     owner: "{{ user }}"
     group: "{{ user }}"

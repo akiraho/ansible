@@ -1,24 +1,24 @@
 ---
-- debug: var=instance_names
-- debug: var=zone
-- debug: var=machine_type
-- debug: var=image
-- debug: var=service_account_email
-- debug: var=credentials_file
-- debug: var=project_id
-- debug: var=tags
+- debug: var=_instance_names
+- debug: var=_zone
+- debug: var=_machine_type
+- debug: var=_image
+- debug: var=_service_account_email
+- debug: var=_credentials_file
+- debug: var=_project_id
+- debug: var=_tags
 
 - name: create instances
   gce:
-    instance_names: "{{ instance_names }}"
-    zone: "{{ zone }}"
-    machine_type: "{{ machine_type }}"
-    image: "{{ image }}"
+    instance_names: "{{ _instance_names }}"
+    zone: "{{ _zone }}"
+    machine_type: "{{ _machine_type }}"
+    image: "{{ _image }}"
     state: present
-    service_account_email: "{{ service_account_email }}"
-    credentials_file: "{{ credentials_file }}"
-    project_id: "{{ project_id }}"
-    tags: "{{ tags }}"
+    service_account_email: "{{ _service_account_email }}"
+    credentials_file: "{{ _credentials_file }}"
+    project_id: "{{ _project_id }}"
+    tags: "{{ _tags }}"
   register: gce
 
 - name: save host data
