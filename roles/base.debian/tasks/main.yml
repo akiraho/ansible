@@ -1,3 +1,15 @@
 ---
+
 - name: apt update
+  become: true
   shell: apt-get update
+
+- name: rsyslog / net
+  become: true
+  shell: cd /etc/rsyslog.d &&
+        echo '$ModLoad immark' > 01-net.conf &&
+        echo '$ModLoad imudp' >> 01-net.conf &&
+        echo '$UDPServerRun 514' >> 01-net.conf &&
+        echo '$ModLoad imtcp' >> 01-net.conf &&
+        echo '$InputTCPServerRun 514' >> 01-net.conf &&
+        service rsyslog restart

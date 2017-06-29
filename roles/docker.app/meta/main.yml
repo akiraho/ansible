@@ -1,4 +1,4 @@
 ---
 dependencies:
-- { role: docker.debian-8 }
+- { role: docker.debian }
 - { role: app }
