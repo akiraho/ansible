@@ -1,0 +1,12 @@
+---
+- debug: var=firewall
+
+- name: gce / firewall
+  gce_net:
+    name: "{{ item.name }}"
+    fwname: "{{ item.fwname }}"
+    allowed: "{{ item.allowed }}"
+    target_tags: "{{ item.target_tags }}"
+    state: present
+  with_items: "{{ firewall }}"
+  when: firewall is defined

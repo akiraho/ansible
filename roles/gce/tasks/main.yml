@@ -1,37 +1,9 @@
 ---
-- debug: var=_instance_names
-- debug: var=_zone
-- debug: var=_machine_type
-- debug: var=_image
-- debug: var=_service_account_email
-- debug: var=_credentials_file
-- debug: var=_project_id
-- debug: var=_tags
+# gce_instance_name
+# gce_zone
+# disks
+# firewall
 
-- name: create instances
-  gce:
-    instance_names: "{{ _instance_names }}"
-    zone: "{{ _zone }}"
-    machine_type: "{{ _machine_type }}"
-    image: "{{ _image }}"
-    state: present
-    service_account_email: "{{ _service_account_email }}"
-    credentials_file: "{{ _credentials_file }}"
-    project_id: "{{ _project_id }}"
-    tags: "{{ _tags }}"
-  register: gce
-
-- name: save host data
-  add_host:
-    hostname: "{{ item.public_ip }}"
-    groupname: new_instances
-  with_items: "{{ gce.instance_data }}"
-
-- name: wait for ssh for instances
-  wait_for:
-    delay: 1
-    host: "{{ item.public_ip }}"
-    port: 22
-    state: started
-    timeout: 120
-  with_items: "{{ gce.instance_data }}"
+- include: disks.yml
+- include: firewall.yml
+- include: instance.yml

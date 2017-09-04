@@ -1,0 +1,52 @@
+---
+# gce_instance_name
+# gce_zone
+# gce_machine_type
+# gce_tags
+# disks
+
+- name: launch 1-disk
+  gce:
+    instance_names: "{{ gce_instance_name }}"
+    zone: "{{ gce_zone }}"
+    machine_type: "{{ gce_machine_type }}"
+    state: present
+    tags: "{{ gce_tags }}"
+    disks:
+      - name: "{{ gce_instance_name }}-disk-0"
+        mode: READ_WRITE
+  register: gce1
+  when: disks|length == 1
+
+- name: launch 2-disk
+  gce:
+    instance_names: "{{ gce_instance_name }}"
+    zone: "{{ gce_zone }}"
+    machine_type: "{{ gce_machine_type }}"
+    state: present
+    tags: "{{ gce_tags }}"
+    disks:
+      - name: "{{ gce_instance_name }}-disk-0"
+        mode: READ_WRITE
+      - name: "{{ gce_instance_name }}-disk-1"
+        mode: READ_WRITE
+  register: gce2
+  when: disks|length == 2
+
+- set_fact:
+    gce: "{{ gce1 if disks|length == 1 else gce2 }}"
+
+- name: gce / new instances
+  add_host:
+    hostname: "{{ item.public_ip }}"
+    groupname: work_instances
+  with_items: "{{ gce.instance_data }}"
+
+- name: gce / ssh / ready
+  wait_for:
+    delay: 1
+    host: "{{ item.public_ip }}"
+    port: 22
+    state: started
+    timeout: 120
+  with_items: "{{ gce.instance_data }}"
