@@ -1,0 +1,33 @@
+---
+
+- name: check
+  command: dpkg-query -W couchbase-server-community
+  register: couchbase_deb
+  failed_when: couchbase_deb.rc > 1 # don't fail
+  changed_when: couchbase_deb.rc == 1 # not found
+
+- set_fact:
+    couchbase_not_installed: "{{ couchbase_deb.rc == 1 }}"
+
+- name: download
+  get_url:
+    url="https://packages.couchbase.com/releases/{{ couchbase_version }}/couchbase-server-community_{{ couchbase_version }}-{{ debian_version }}.deb"
+    dest="/tmp/couchbase-server-community_{{ couchbase_version }}-{{ debian_version }}.deb"
+  when: couchbase_not_installed
+
+- name: install
+  apt: deb=/tmp/couchbase-server-community_{{ couchbase_version }}-{{ debian_version }}.deb
+  when: couchbase_not_installed
+
+- name: dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    owner: couchbase
+    group: couchbase
+  with_items:
+    - "{{ node_data_path }}"
+    - "{{ node_index_path }}"
+
+- include: roles/couchbase/tasks/node_init.yml

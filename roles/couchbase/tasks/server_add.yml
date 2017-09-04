@@ -1,0 +1,24 @@
+---
+- debug: var=_cluster_host
+- debug: var=_add_host
+
+# couchbase-cli server-add -c [host]:8091 -u [admin] -p [password] [options]
+- name: couchbase / server / add
+  command: >
+    /opt/couchbase/bin/couchbase-cli server-add \
+    -c {{ _cluster_host }}:8091 \
+    -u {{ username }} \
+    -p {{ password }} \
+    --server-add={{ _add_host }}:8091 \
+    --server-add-username={{ username }} \
+    --server-add-password={{ password }} \
+  when: couchbase_not_installed
+
+# couchbase-cli rebalance -c [host]:8091 -u [admin] -p [password] [options]
+- name: couchbase / rebalance
+  command: >
+    /opt/couchbase/bin/couchbase-cli rebalance \
+    -c {{ _cluster_host }}:8091 \
+    -u {{ username }} \
+    -p {{ password }}
+  when: couchbase_not_installed

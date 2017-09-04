@@ -1,0 +1,12 @@
+---
+
+# couchbase-cli cluster-init --c [host]:8091 [options]
+- name: couchbase / cluster / init
+  command: >
+    /opt/couchbase/bin/couchbase-cli cluster-init -c localhost:8091 \
+    --cluster-username={{ username }} \
+    --cluster-password={{ password }} \
+    --cluster-port=8091 \
+    --cluster-ramsize={{ cluster_ramsize }} \
+    --cluster-index-ramsize={{ index_ramsize }}
+  when: couchbase_not_installed
