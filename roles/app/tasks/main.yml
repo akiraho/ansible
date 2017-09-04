@@ -1,19 +1,10 @@
 ---
 - debug: var=app
 - debug: var=user
-- debug: var=opt
+- debug: var=dir_opt
 
-- name: dir_app
-  command: "echo /opt/{{ app }}"
-  register: dir_app
-
-#- name: dir_app_etc
-#  command: "echo {{ dir_app.stdout }}/etc"
-#  register: dir_app_etc
-
-#- name: dir_app_log
-#  command: "echo {{ dir_app.stdout }}/log"
-#  register: dir_app_log
+- set_fact:
+    dir_app: "/opt/{{ app }}"
 
 - name: group
   group:
@@ -29,7 +20,7 @@
 
 - name: app directory
   file:
-    path: "{{ dir_app.stdout }}"
+    path: "{{ dir_app }}"
     state: directory
     owner: "{{ user }}"
     group: "{{ user }}"
@@ -38,15 +29,15 @@
 # app/bin|etc|user_ssh|log
 - name: app opt
   copy:
-    src: "{{ opt }}/"
-    dest: "{{ dir_app.stdout }}/"
+    src: "{{ dir_opt }}/"
+    dest: "{{ dir_app }}/"
     owner: "{{ user }}"
     group: "{{ user }}"
     mode: 0600
 
 - name: app log
   file:
-    path: "{{ dir_app.stdout }}/log"
+    path: "{{ dir_app }}/log"
     state: directory
     owner: "{{ user }}"
     group: "{{ user }}"
@@ -54,21 +45,21 @@
 
 - name: chmod app
   file:
-    path: "{{ dir_app.stdout }}"
+    path: "{{ dir_app }}"
     state: directory
     mode: u+rwX,go-rwx
     recurse: true
 
 - name: chmod app/bin
   file:
-    path: "{{ dir_app.stdout }}/bin"
+    path: "{{ dir_app }}/bin"
     state: directory
     mode: u+rwx,go-rwx
     recurse: true
 
 - name: link ~user/.ssh to /opt/app/user_ssh
   file:
-    src: "{{ dir_app.stdout }}/user_ssh"
+    src: "{{ dir_app }}/user_ssh"
     dest: "~{{ user }}/.ssh"
     owner: "{{ user }}"
     group: "{{ user }}"

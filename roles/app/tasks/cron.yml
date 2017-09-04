@@ -1,0 +1,10 @@
+---
+- debug: var=dir_cron
+
+- name: app / cron
+  copy:
+    src: "{{ dir_con }}"
+    dest: /etc/cron.d/
+    owner: root
+    group: root
+    mode: 0644
