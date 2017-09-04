@@ -1,0 +1,28 @@
+---
+- debug: var=username
+- debug: var=usergroups
+- debug: var=dir_ssh
+
+- name: user / account
+  user:
+    name: "{{ username }}"
+    shell: /bin/bash
+    groups: "{{ usergroups }}"
+    append: true
+
+- name: user ssh dir
+  file:
+    path: "/home/{{ username }}/.ssh"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0700
+
+- name: user ssh dir
+  copy:
+    src: "{{ dir_ssh }}"
+    dest: "/home/{{ username }}/.ssh/"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0600
+  when: dir_ssh is defined

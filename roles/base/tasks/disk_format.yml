@@ -1,0 +1,26 @@
+---
+- debug: var=device
+- debug: var=fstype
+- debug: var=path
+
+- name: parted
+  parted:
+    device: "{{ device }}"
+    number: 1
+    state: present
+- name: mkfs
+  filesystem:
+    fstype: "{{ fstype }}"
+    dev: "{{ device }}1"
+- name: mount point
+  file:
+    path: "{{ path }}"
+    state: directory
+    mode: 0755
+- name: mount
+  mount:
+    path: "{{ path }}"
+    src: "{{ device }}1"
+    fstype: "{{ fstype }}"
+    opts: noatime,nodiratime
+    state: mounted
