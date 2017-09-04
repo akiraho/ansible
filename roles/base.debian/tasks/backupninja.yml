@@ -1,0 +1,29 @@
+---
+- debug: var=hostname
+- debug: var=dest
+- debug: var=includes
+
+- name: apt / backupninja
+  apt:
+    name: backupninja
+    state: present
+
+- name: apt / rdiff-backup
+  apt:
+    name: rdiff-backup
+    state: present
+
+- name: backup directory
+  file:
+    path: "{{ dest }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0700
+
+- template:
+    src: ../templates/etc_backup.d_50.rdiff
+    dest: /etc/backup.d/50.rdiff
+    owner: root
+    group: root
+    mode: 0600
