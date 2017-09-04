@@ -6,3 +6,9 @@
     name: "{{ user }}"
     groups: docker
     state: present
+
+- include: network.yml network="{{ item }}"
+  with_items: "{{ docker_networks }}"
+
+- include: volume.yml volume="{{ item }}"
+  with_items: "{{ docker_volumes }}"
