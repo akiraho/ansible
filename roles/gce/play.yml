@@ -1,0 +1,24 @@
+---
+
+- name: gce
+  hosts: localhost
+  gather_facts: no
+  roles:
+    - {
+        role: gce
+      }
+
+- name: host / data disk
+  hosts: work_instances
+  gather_facts: no
+  become: true
+  tasks:
+    - include_role:
+        name: base
+        tasks_from: disk_format
+      vars:
+        device: "{{ item.device }}"
+        fstype: "{{ item.fstype }}"
+        path: "{{ item.path }}"
+      with_items: "{{ disks }}"
+      when: item.id > 0

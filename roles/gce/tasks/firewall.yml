@@ -1,5 +1,4 @@
 ---
-- debug: var=firewall
 
 - name: gce / firewall
   gce_net:
