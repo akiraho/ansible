@@ -43,11 +43,12 @@
     group: "{{ user }}"
     mode: 0700
 
+# chmod 644 needed for docker configs under /opt/app/etc
 - name: chmod app
   file:
     path: "{{ dir_app }}"
     state: directory
-    mode: u+rwX,go-rwx
+    mode: u+rwX,go-rwx,go+rX
     recurse: true
 
 - name: chmod app/bin
@@ -55,6 +56,13 @@
     path: "{{ dir_app }}/bin"
     state: directory
     mode: u+rwx,go-rwx
+    recurse: true
+
+- name: chmod app/user_ssh
+  file:
+    path: "{{ dir_app }}/user_ssh"
+    state: directory
+    mode: u+rwX,go-rwx
     recurse: true
 
 - name: link ~user/.ssh to /opt/app/user_ssh
