@@ -1,0 +1,8 @@
+---
+- debug: var=dir
+
+- name: cron
+  copy:
+    src: "{{ dir }}"
+    dest: /etc/cron.d/
+    mode: 0600

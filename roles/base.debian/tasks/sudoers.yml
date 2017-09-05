@@ -1,0 +1,8 @@
+---
+- debug: var=dir
+
+- name: sudoers
+  copy:
+    src: "{{ dir }}"
+    dest: /etc/sudoers.d/
+    mode: 0600
