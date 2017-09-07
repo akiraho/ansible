@@ -17,7 +17,6 @@ keep = 7
 # (supports globbing with '*')
 include = /etc
 include = /home
-include = /opt
 {% for item in includes %}
 include = {{ item.path }}
 {% endfor %}
