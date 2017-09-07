@@ -1,0 +1,9 @@
+---
+- debug: var=app
+
+- name: /opt/{{ app }}/[subdir]/ - chmod
+  shell: "chmod -R {{ item.chmod }} /opt/{{ app }}/{{ item.dir }}"
+  with_items:
+    - { dir: "bin", chmod: "u+rwx" } # executable
+    - { dir: "etc", chmod: "go+rX" } # readable for docker containers
+

@@ -18,7 +18,7 @@
     shell: /bin/bash
     state: present
 
-- name: app directory
+- name: /opt/app/
   file:
     path: "{{ dir_app }}"
     state: directory
@@ -26,8 +26,7 @@
     group: "{{ user }}"
     mode: 0700
 
-# app/bin|etc|user_ssh|log
-- name: app opt
+- name: /opt/app/[bin|etc|user_ssh|log]/
   copy:
     src: "{{ dir_opt }}/"
     dest: "{{ dir_app }}/"
@@ -35,35 +34,15 @@
     group: "{{ user }}"
     mode: 0600
 
-- name: app log
+- name: /opt/app/[dir]/ pre-created
   file:
-    path: "{{ dir_app }}/log"
+    path: "{{ dir_app }}/{{ item }}"
     state: directory
     owner: "{{ user }}"
     group: "{{ user }}"
     mode: 0700
-
-# chmod 644 needed for docker configs under /opt/app/etc
-- name: chmod app
-  file:
-    path: "{{ dir_app }}"
-    state: directory
-    mode: u+rwX,go-rwx,go+rX
-    recurse: true
-
-- name: chmod app/bin
-  file:
-    path: "{{ dir_app }}/bin"
-    state: directory
-    mode: u+rwx,go-rwx
-    recurse: true
-
-- name: chmod app/user_ssh
-  file:
-    path: "{{ dir_app }}/user_ssh"
-    state: directory
-    mode: u+rwX,go-rwx
-    recurse: true
+  with_items:
+    - log
 
 - name: link ~user/.ssh to /opt/app/user_ssh
   file:
@@ -72,3 +51,5 @@
     owner: "{{ user }}"
     group: "{{ user }}"
     state: link
+
+- include: chmod.yml
