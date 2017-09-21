@@ -11,12 +11,13 @@ label = {{ hostname }}
 type = local
 
 # how many days of data to keep
-keep = 7
+keep = 30
 
 # files to include in the backup
 # (supports globbing with '*')
 include = /etc
 include = /home
+include = /var/log
 {% for item in includes %}
 include = {{ item.path }}
 {% endfor %}
