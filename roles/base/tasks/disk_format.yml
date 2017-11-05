@@ -3,15 +3,15 @@
 - debug: var=fstype
 - debug: var=path
 
-- name: parted
-  parted:
-    device: "{{ device }}"
-    number: 1
-    state: present
+# - name: parted
+#   parted:
+#     device: "{{ device }}"
+#     number: 1
+#     state: present
 - name: mkfs
   filesystem:
     fstype: "{{ fstype }}"
-    dev: "{{ device }}1"
+    dev: "{{ device }}"
 - name: mount point
   file:
     path: "{{ path }}"
@@ -20,7 +20,7 @@
 - name: mount
   mount:
     path: "{{ path }}"
-    src: "{{ device }}1"
+    src: "{{ device }}"
     fstype: "{{ fstype }}"
     opts: noatime,nodiratime
     state: mounted
