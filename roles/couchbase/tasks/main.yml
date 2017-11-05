@@ -30,4 +30,6 @@
     - "{{ node_data_path }}"
     - "{{ node_index_path }}"
 
-- include: roles/couchbase/tasks/node_init.yml
+- include_role:
+    name: couchbase
+    tasks_from: node_init

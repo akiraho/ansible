@@ -14,8 +14,8 @@
     --ro-password={{ backup_password }}
 
 - template:
-    src: ../templates/etc_cron.daily_backup-couchbase
-    dest: /etc/cron.daily/backup-couchbase
+    src: ../templates/opt/bin/backup-couchbase.sh
+    dest: /opt/bin/backup-couchbase.sh
     owner: root
     group: root
     mode: 0755
