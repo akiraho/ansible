@@ -16,3 +16,7 @@
         echo '$ModLoad imtcp' >> 01-net.conf &&
         echo '$InputTCPServerRun 514' >> 01-net.conf &&
         service rsyslog restart
+
+- include: grub.yml
+
+- include: ssh.yml

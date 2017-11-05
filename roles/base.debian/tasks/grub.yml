@@ -1,0 +1,27 @@
+---
+
+# http://awhitehatter.me/debian-jessie-wdocker/
+# docker stats on debian
+
+- name: check
+  command: ls /etc/default/grub.default
+  register: ls_grub_backup_file
+  failed_when: false # don't fail
+
+- set_fact:
+    is_grub_new: "{{ ls_grub_backup_file.rc > 0 }}"
+
+- name: docker stats / grub backup
+  shell: mv /etc/default/grub /etc/default/grub.default
+  when: is_grub_new
+
+- name: docker stats / grub config
+  copy:
+    src: ../templates/etc_default_grub
+    dest: /etc/default/grub
+    mode: 0644
+  when: is_grub_new
+
+- name: docker stats / grub update
+  shell: update-grub
+  when: is_grub_new

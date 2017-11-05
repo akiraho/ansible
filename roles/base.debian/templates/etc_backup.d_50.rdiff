@@ -11,7 +11,7 @@ label = {{ hostname }}
 type = local
 
 # how many days of data to keep
-keep = 30
+keep = {{ keep }}
 
 # files to include in the backup
 # (supports globbing with '*')

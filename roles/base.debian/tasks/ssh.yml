@@ -1,0 +1,24 @@
+---
+
+- name: sshd / check
+  command: ls /etc/ssh/sshd_config.default
+  register: ls_sshd_config_backup_file
+  failed_when: false # don't fail
+
+- set_fact:
+    is_sshd_new: "{{ ls_sshd_config_backup_file.rc > 0 }}"
+
+- name: sshd / backup
+  shell: mv /etc/ssh/sshd_config /etc/ssh/sshd_config.default
+  when: is_sshd_new
+
+- name: sshd / config
+  copy:
+    src: ../templates/etc_ssh_sshd_config
+    dest: /etc/ssh/sshd_config
+    mode: 0644
+  when: is_sshd_new
+
+- name: sshd / restart
+  shell: service ssh restart
+  when: is_sshd_new
