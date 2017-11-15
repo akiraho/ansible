@@ -25,6 +25,9 @@ include = {{ item.path }}
 # files to exclude from the backup
 # (supports globbing with '*')
 #exclude = /home/*/.gnupg
+{% for item in excludes %}
+exclude = {{ item.path }}
+{% endfor %}
 
 ######################################################
 ## destination section
