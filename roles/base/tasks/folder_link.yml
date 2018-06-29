@@ -1,0 +1,19 @@
+---
+- debug: var=mode
+- debug: var=folder
+- debug: var=link
+
+# link => folder
+
+- name:
+  shell: "rmdir {{ link }} || true"
+- file:
+    path: "{{ folder }}"
+    state: directory
+    mode: "{{ mode }}"
+- file:
+    src: "{{ folder }}"
+    dest: "{{ link }}"
+    owner: root
+    group: root
+    state: link

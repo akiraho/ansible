@@ -13,6 +13,7 @@
   gather_facts: no
   become: true
   tasks:
+
     - include_role:
         name: base
         tasks_from: disk_format
@@ -22,3 +23,12 @@
         path: "{{ item.path }}"
       with_items: "{{ disks }}"
       when: item.id > 0
+
+    - include_role:
+        name: base
+        tasks_from: folder_link
+      vars:
+        mode: "{{ item.mode }}"
+        folder: "{{ item.folder }}"
+        link: "{{ item.link }}"
+      with_items: "{{ folder_links }}"
