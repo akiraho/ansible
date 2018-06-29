@@ -9,8 +9,8 @@
 - set_fact:
     couchbase_not_installed: "{{ couchbase_deb.rc == 1 }}"
 
-# https://packages.couchbase.com/releases/4.5.1/couchbase-server-community_4.5.1-debian8_amd64.deb"
-# https://packages.couchbase.com/releases/4.5.1/couchbase-server-community-dbg_4.5.1-debian8_amd64.deb
+# https://packages.couchbase.com/releases/4.5.1/couchbase-server-community_4.5.1-debian8_amd64.deb
+# https://packages.couchbase.com/releases/5.1.1/couchbase-server-community_5.1.1-debian9_amd64.deb
 - name: download
   get_url:
     url="https://packages.couchbase.com/releases/{{ couchbase_version }}/couchbase-server-community_{{ couchbase_version }}-{{ debian_version }}.deb"
@@ -31,7 +31,24 @@
   with_items:
     - "{{ node_data_path }}"
     - "{{ node_index_path }}"
+  when: couchbase_not_installed
 
 - include_role:
     name: couchbase
     tasks_from: node_init
+
+# https://developer.couchbase.com/documentation/server/5.1/install/install-swap-space.html
+- name: /etc/sysctl.d - e.g. swappiness
+  copy:
+    src: ../templates/etc/sysctl.d/
+    dest: /etc/sysctl.d/
+    mode: 0644
+
+# # https://developer.couchbase.com/documentation/server/5.1/install/thp-disable.html
+- name: /etc/rc.local - e.g. thp disabled
+  template:
+    src: ../templates/etc/rc.local
+    dest: /etc/rc.local
+    owner: root
+    group: root
+    mode: 0755

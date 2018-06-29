@@ -1,0 +1,6 @@
+# /etc/cron.d/gp2 -- cron tab entry for gp2
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# daily @08:00 hkt / before backupninja @09:00 hkt
+00 00 * * * root if [ -x /opt/bin/couchbase-backup.sh ]; then cd /opt/bin && ./couchbase-backup.sh; fi

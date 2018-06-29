@@ -10,12 +10,18 @@
     -u {{ username }} \
     -p {{ password }} \
     --set \
-    --ro-username={{ backup_username }} \
-    --ro-password={{ backup_password }}
+    --rbac-username={{ backup_username }} \
+    --rbac-password={{ backup_password }} \
+    --auth-domain=local \
+    --roles=admin
 
-- template:
-    src: ../templates/opt/bin/backup-couchbase.sh
-    dest: /opt/bin/backup-couchbase.sh
-    owner: root
-    group: root
+- include_role:
+    name: base.debian
+    tasks_from: cron
+  vars:
+    dir: templates/etc/cron.d/
+
+- copy:
+    src: ../templates/opt/bin/
+    dest: /opt/bin/
     mode: 0755

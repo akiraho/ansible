@@ -4,9 +4,13 @@
 - name: couchbase / cluster / init
   command: >
     /opt/couchbase/bin/couchbase-cli cluster-init -c localhost:8091 \
+    --cluster-name={{ cluster_name }} \
     --cluster-username={{ username }} \
     --cluster-password={{ password }} \
     --cluster-port=8091 \
+    --services=data,index,query,fts \
     --cluster-ramsize={{ cluster_ramsize }} \
-    --cluster-index-ramsize={{ index_ramsize }}
+    --cluster-index-ramsize={{ index_ramsize }} \
+    --cluster-fts-ramsize={{ fts_ramsize }} \
+    --index-storage-setting=default
   when: couchbase_not_installed
