@@ -4,8 +4,7 @@
   become: true
   shell: apt update &&
         apt upgrade -y &&
-        apt install -y --no-install-recommends
-          htop
+        apt install -y --no-install-recommends htop
 
 - name: rsyslog / net
   become: true
@@ -17,6 +16,6 @@
         echo '$InputTCPServerRun 514' >> 01-net.conf &&
         service rsyslog restart
 
-- include: grub.yml
+# - include: grub.yml
 
 - include: ssh.yml
