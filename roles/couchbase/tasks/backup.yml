@@ -4,16 +4,16 @@
 - debug: var=backup_password
 
 # couchbase-cli user-manage -c [host]:8091 -u [admin] -p [password] [options]
-- name: couchbase / user / manage
-  command: >
-    /opt/couchbase/bin/couchbase-cli user-manage -c localhost:8091 \
-    -u {{ username }} \
-    -p {{ password }} \
-    --set \
-    --rbac-username={{ backup_username }} \
-    --rbac-password={{ backup_password }} \
-    --auth-domain=local \
-    --roles=admin
+# - name: couchbase / user / manage
+#   command: >
+#     /opt/couchbase/bin/couchbase-cli user-manage -c localhost:8091 \
+#     -u {{ username }} \
+#     -p {{ password }} \
+#     --set \
+#     --rbac-username={{ backup_username }} \
+#     --rbac-password={{ backup_password }} \
+#     --auth-domain=local \
+#     --roles=admin
 
 - include_role:
     name: base.debian
