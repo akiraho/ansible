@@ -4,7 +4,7 @@
   become: true
   shell: apt update &&
         apt upgrade -y &&
-        apt install -y --no-install-recommends htop
+        apt install -y --no-install-recommends less htop
 
 - name: rsyslog / net
   become: true
