@@ -6,17 +6,18 @@
 # disks
 
 - name: gce / disk / boot
-  gce_pd:
+  gcp_compute_disk:
+    auth_kind: service_account_file
     zone: "{{ gce_zone }}"
     name: "{{ gce_instance_name }}-disk-{{ item.id }}"
     size_gb: "{{ item.size_gb }}"
-    image: "{{ item.gce_image }}"
-    mode: READ_WRITE
+    source_image: "{{ item.gce_image }}"
+    # mode: READ_WRITE
   with_items: "{{ disks }}"
   when: item.id == 0
 
 - name: gce / launch
-  gce:
+  gcp_compute_instance:
     instance_names: "{{ gce_instance_name }}"
     zone: "{{ gce_zone }}"
     machine_type: "{{ gce_machine_type }}"
@@ -28,7 +29,7 @@
   register: gce
 
 - name: gce / disks / data
-  gce_pd:
+  gcp_compute_disk:
     instance_name: "{{ gce_instance_name }}"
     zone: "{{ gce_zone }}"
     name: "{{ gce_instance_name }}-disk-{{ item.id }}"
