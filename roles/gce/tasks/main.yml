@@ -7,11 +7,10 @@
 
 - name: gce / disk / boot
   gcp_compute_disk:
-    auth_kind: service_account_file
     zone: "{{ gce_zone }}"
     name: "{{ gce_instance_name }}-disk-{{ item.id }}"
     size_gb: "{{ item.size_gb }}"
-    source_image: "{{ item.gce_image }}"
+    source_image: "projects/debian-cloud/global/images/family/debian-10"
     # mode: READ_WRITE
   with_items: "{{ disks }}"
   when: item.id == 0
