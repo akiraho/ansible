@@ -3,9 +3,12 @@
 # couchbase-cli node-init -c [host]:8091 -u [admin] -p [password] [options]
 - name: couchbase / node / init
   command: >
-    /opt/couchbase/bin/couchbase-cli node-init -c localhost:8091 \
-    -u {{ username }} \
-    -p {{ password }} \
+    /opt/couchbase/bin/couchbase-cli node-init \
+    --cluster localhost:8091 \
+    --username {{ username }} \
+    --password {{ password }} \
     --node-init-data-path={{ node_data_path }} \
     --node-init-index-path={{ node_index_path }}
   when: couchbase_not_installed
+
+    # --node-init-hostname={{ node_hostname }}

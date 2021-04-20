@@ -1,4 +1,4 @@
-# /etc/cron.d/gp2 -- cron tab entry for gp2
+# /etc/cron.d/couchbase_backup -- cron tab entry for couchbase backup
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
